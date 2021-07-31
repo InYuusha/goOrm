@@ -4,27 +4,33 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 	"github.com/gorilla/mux"
+
 )
 
-func helloWorld(res http.ResponseWriter,req *http.Request){
-	fmt.Fprint(res,"HEllo World")
+func helloWorld(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprint(res, "HEllo World")
 }
 
-func handleRequest(){
-	router:=mux.NewRouter().StrictSlash(true)
+func handleRequest() {
+	router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/",helloWorld).Methods("GET")
-	
-	router.HandleFunc("/users",AllUsers).Methods("GET")
-	router.HandleFunc("/users/{name}/{email}",NewUser).Methods("POST")
-	router.HandleFunc("/users/{name}",DeleteUser).Methods("POST")
+	router.HandleFunc("/", helloWorld).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8080",router))
+	router.HandleFunc("/users", AllUsers).Methods("GET")
+	router.HandleFunc("/user/{name}/{email}", NewUser).Methods("POST")
+	router.HandleFunc("/user/{name}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/user/{name}/{email}", UpdateUser).Methods("PUT")
+
+	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
 
-func main(){
+func main() {
 	fmt.Println("Starting...")
+
+	InitialMigration()//setup table
+
 	handleRequest()
 }
